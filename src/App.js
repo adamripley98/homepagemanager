@@ -1,24 +1,9 @@
 import React, { Component } from 'react';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import axios from 'axios';
 import './App.css';
 
 // TODO add loading component
 // TODO display errors nicely
-
-const SortableItem = SortableElement(({value}) =>
-  <li className="list-item">{value}</li>
-);
-
-const SortableList = SortableContainer(({items}) => {
-  return (
-    <ul>
-      {items.map((value, index) => (
-        <SortableItem key={`item-${index}`} index={index} value={value} />
-      ))}
-    </ul>
-  );
-});
 
 class App extends Component {
 
@@ -28,8 +13,16 @@ class App extends Component {
       success: '',
       error: '',
       items: ['Dining', 'Laundry', 'News', 'Events', 'Feedback'],
+      options: ['Dining', 'Laundry', 'News', 'Events', 'Feedback'],
+      itemNum: 0,
+      newItem: '',
     }
     this.submitForm = this.submitForm.bind(this);
+    this.renderItems = this.renderItems.bind(this);
+    this.handleChangeNewItem = this.handleChangeNewItem.bind(this);
+    this.addOption = this.addOption.bind(this);
+    this.addItem = this.addItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
   }
 
   componentDidMount() {
@@ -40,6 +33,7 @@ class App extends Component {
       if (resp.data.cells && resp.data.cells.length) {
         this.setState({
           items: resp.data.cells,
+          itemNum: resp.data.cells.length,
         });
       }
     })
@@ -50,19 +44,13 @@ class App extends Component {
     })
   }
 
-  onSortEnd = ({oldIndex, newIndex}) => {
-    this.setState({
-      items: arrayMove(this.state.items, oldIndex, newIndex),
-    });
-  };
-
   submitForm() {
-    console.log('submitted', this.state.items);
     axios.post('http://localhost:5000/homepage/order', {
       cellOptions: this.state.items,
     })
     .then(resp => {
       if (resp.data.success) {
+        console.log('homepage updated');
         this.setState({
           success: 'Homepage updated.',
           error: ''
@@ -82,6 +70,69 @@ class App extends Component {
     });
   }
 
+  handleChangeNewItem(e) {
+    this.setState({
+      newItem: e.target.value,
+    });
+  }
+
+  addItem() {
+    const newItems = this.state.items.slice();
+    newItems.push(this.state.items[0]);
+    console.log(newItems);
+    this.setState({
+      items: newItems,
+    });
+  }
+
+  removeItem() {
+    const newItems = this.state.items.slice();
+    newItems.pop();
+    console.log(newItems);
+    this.setState({
+      items: newItems,
+    });
+  }
+
+  addOption() {
+    if (this.state.newItem) {
+      const newItems = this.state.items.slice();
+      newItems.push(this.state.newItem);
+      this.setState({
+        items: newItems,
+      });
+      console.log('adding option', this.state.newItem);
+    }
+  }
+
+  changeItem(e, i){
+    const newItems = this.state.items.slice();
+    newItems.splice(i, 1, e.target.value);
+    console.log('what is newItems', newItems);
+    this.setState({
+      items: newItems,
+    });
+  }
+
+  renderItems() {
+    return (
+      <form id="myForm">
+        {
+          this.state.items.map((_, index) => (
+            <div key={index}>
+              <select value={this.state.items[index]} key={index} onChange={(e) => this.changeItem(e, index)}>
+                {this.state.options.map((item, i) => (
+                  <option value={item} key={i}>{item}</option>
+                ))}
+              </select>
+              <br/>
+            </div>
+          ))
+        }
+      </form>
+    )
+  }
+
   render() {
     return (
       <div className="App">
@@ -92,10 +143,14 @@ class App extends Component {
           This web app will be used to control what cells Penn Mobile users will see on the homepage.
         </p>
         <div className="container">
-          <SortableList items={this.state.items} onSortEnd={this.onSortEnd} />
+          {this.renderItems()}
+          <p>Add an item to homepage</p>
+          <input type="submit" value="+" className="add" onClick={this.addItem}></input>
+          <p>Remove an item from homepage</p>
+          <input type="submit" value="-" className="delete" onClick={this.removeItem}></input>
+          <br/>
+          <input type="submit" onClick={this.submitForm} value="Submit" className="submit"></input>
         </div>
-        <input name="number" type="number"/>
-        <input type="submit" className="submit" onClick={this.submitForm}></input>
       </div>
     );
   }
