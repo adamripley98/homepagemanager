@@ -11,13 +11,9 @@ class App extends Component {
       error: '',
       items: [],
       options: ['Dining', 'Laundry', 'News', 'Events', 'Feedback'],
-      itemNum: 0,
-      newItem: '',
     }
     this.submitForm = this.submitForm.bind(this);
     this.renderItems = this.renderItems.bind(this);
-    this.handleChangeNewItem = this.handleChangeNewItem.bind(this);
-    this.addOption = this.addOption.bind(this);
     this.addItem = this.addItem.bind(this);
     this.removeItem = this.removeItem.bind(this);
   }
@@ -28,7 +24,6 @@ class App extends Component {
       if (resp.data.cells && resp.data.cells.length) {
         this.setState({
           items: resp.data.cells,
-          itemNum: resp.data.cells.length,
         });
       }
     })
@@ -65,10 +60,6 @@ class App extends Component {
     });
   }
 
-  handleChangeNewItem(e) {
-    this.setState({newItem: e.target.value});
-  }
-
   addItem() {
     const newItems = this.state.items.slice();
     newItems.push(this.state.items[0]);
@@ -79,14 +70,6 @@ class App extends Component {
     const newItems = this.state.items.slice();
     newItems.pop();
     this.setState({items: newItems});
-  }
-
-  addOption() {
-    if (this.state.newItem) {
-      const newItems = this.state.items.slice();
-      newItems.push(this.state.newItem);
-      this.setState({items: newItems});
-    }
   }
 
   changeItem(e, i){
