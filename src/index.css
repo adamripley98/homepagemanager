@@ -40,6 +40,54 @@ body {
   background-color: red;
   color: white;
   text-decoration: none;
-  font-size: 16px;
   border-radius: 0.4rem;
+}
+
+.btn {
+  font-size: 16px;
+  padding: 5px 15px;
+  font-weight: bold;
+  padding: 0.5rem 0.75rem;
+}
+
+.buttons {
+  width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.buttons .btn {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.buttons .btn + .btn {
+  margin-right: 0rem;
+  margin-left: 0.5rem;
+}
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: black !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.select {
+  margin-bottom: 0.5rem;
+}
+
+.line {
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.btn-primary {
+  float: right;
 }
