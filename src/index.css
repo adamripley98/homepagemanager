@@ -60,6 +60,7 @@ body {
 .buttons .btn {
   flex: 1;
   margin-right: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .buttons .btn + .btn {

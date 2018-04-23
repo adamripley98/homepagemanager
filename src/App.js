@@ -10,7 +10,7 @@ class App extends Component {
       success: '',
       error: '',
       items: [],
-      options: ['Dining', 'Laundry', 'News', 'Events', 'Feedback'],
+      options: ['Dining', 'Laundry', 'News', 'Event', 'GSR'],
     }
     this.submitForm = this.submitForm.bind(this);
     this.renderItems = this.renderItems.bind(this);
@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5000/homepage/order')
+    axios.get('http://api-dev.pennlabs.org/homepage/order')
     .then(resp => {
       if (resp.data.cells && resp.data.cells.length) {
         this.setState({
@@ -36,7 +36,7 @@ class App extends Component {
   }
 
   submitForm() {
-    axios.post('http://localhost:5000/homepage/order', {
+    axios.post('http://api-dev.pennlabs.org/homepage/order', {
       cellOptions: this.state.items,
     })
     .then(resp => {
